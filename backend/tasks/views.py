@@ -4,6 +4,7 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_204_NO_CONTENT
+from rest_framework.filters import OrderingFilter
 
 from .models import Task
 from .serializers import TaskSerializer
@@ -14,10 +15,16 @@ from common.pagination import CustomPagination
 class UserTasksListView(ListAPIView):
     serializer_class = TaskSerializer
     pagination_class = CustomPagination
+    filter_backends = (OrderingFilter,)
     ordering = ['-id']
 
     def get_queryset(self):
-        return Task.objects.get_user_tasks(self.request.user)
+        queryset = Task.objects.get_user_tasks(self.request.user)
+        complated = self.request.query_params.get('complated', None)
+        if complated:
+            queryset = queryset.filter(
+                complated_at__isnull=not bool(complated == 'true'))
+        return queryset
 
 
 class TaskCreateView(CreateAPIView):

@@ -25,8 +25,7 @@ class Task(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     complated_at = models.DateTimeField(blank=True, null=True)
     title = models.CharField(max_length=30)
-    content = models.TextField()
-    order = models.SmallIntegerField()
+    description = models.TextField()
 
     objects = TaskManager()
 
