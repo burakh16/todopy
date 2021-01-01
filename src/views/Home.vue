@@ -39,7 +39,7 @@
       <Loading />
     </v-col>
     <Dialog :dialog="dialog" title="New Task" @dialogClosed="onDialogClosed">
-      <TaskForm :task="task" @taskSaved="onTaskSaved" />
+      <TaskForm :task="task" @taskSaved="onTaskSaved" ref="taskForm" />
     </Dialog>
   </v-row>
 </template>
@@ -92,6 +92,7 @@ export default {
     },
     onDialogClosed() {
       this.dialog = false;
+      this.$refs.taskForm.onClose();
     },
     onClick() {
       this.dialog = true;
