@@ -19,7 +19,7 @@
     <v-col cols="12" v-if="!getLoading && anyTask">
       <v-row>
         <v-col cols="4" v-for="(item, index) in getTasks" :key="index">
-          <TaskCard :task="item" />
+          <TaskCard :task="item" @taskComplated="onTaskComplated" />
         </v-col>
         <v-col cols="12">
           <Pagination
@@ -30,20 +30,24 @@
         </v-col>
       </v-row>
     </v-col>
-    <v-col cols="12" v-if="!anyTask"> yok </v-col>
+    <v-col cols="12" v-if="!anyTask">
+      <v-alert outlined color="purple">
+        <div class="title text-center">There is no task!</div>
+      </v-alert>
+    </v-col>
     <v-col cols="12" class="text-center">
       <Loading />
     </v-col>
-    <Modal :dialog="dialog" @dialogClosed="onDialogClosed">
+    <Dialog :dialog="dialog" title="New Task" @dialogClosed="onDialogClosed">
       <TaskForm :task="task" @taskSaved="onTaskSaved" />
-    </Modal>
+    </Dialog>
   </v-row>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
 
-import Modal from "@/components/Modal.vue";
+import Dialog from "@/components/Dialog.vue";
 import TaskCard from "@/components/TaskCard.vue";
 import TaskForm from "@/components/TaskForm.vue";
 import TaskTabs from "@/components/TaskTabs.vue";
@@ -52,7 +56,7 @@ import Loading from "@/components/Loaders.vue";
 
 export default {
   name: "Home",
-  components: { TaskCard, TaskTabs, Pagination, Loading, TaskForm, Modal },
+  components: { TaskCard, TaskTabs, Pagination, Loading, TaskForm, Dialog },
   data() {
     return {
       complated: undefined,
@@ -63,9 +67,12 @@ export default {
   },
   computed: {
     ...mapGetters(["getTasks", "getPagination", "getLoading"]),
+    anyTask() {
+      return this.getTasks.length > 0 ? true : false;
+    },
   },
   methods: {
-    ...mapActions(["get_tasks", "add_task", "set_loading"]),
+    ...mapActions(["get_tasks", "add_task", "complate_task", "set_loading"]),
     async onTabChanged(tab) {
       this.complated = tab;
       this.page = 1;
@@ -83,17 +90,20 @@ export default {
       this.page = page;
       this.loadData();
     },
-    anyTask() {
-      return this.getTasks.length > 0 ? true : false;
-    },
     onDialogClosed() {
       this.dialog = false;
     },
     onClick() {
       this.dialog = true;
     },
+    async onTaskComplated(task) {
+      await this.complate_task(task.id);
+      this.$toast("You complated the task!");
+    },
     async onTaskSaved(task) {
-      await this.add_task(task);
+      const status = await this.add_task(task);
+      console.log(status);
+      if (status === 200) this.$toast("You complated the task!");
     },
   },
   async created() {

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import api from '@/core/api'
 
 const state = {
     task: {},
@@ -20,16 +21,27 @@ const actions = {
     },
     async add_task({ commit }, task) {
         let url = `task/create/`
-        const response = await axios.post(url, task)
-        console.log(response);
+        const response = await api.post(url, task)
         if(response.status === "200")
             commit("ADD_TASK", response.data)
+        return response.status
+    },
+    async complate_task({ commit }, task_id) {
+        let url = `task/complate-task/${task_id}/`
+        const response = await axios.put(url)
+        commit("SET_TASK", response.data)
     }
 }
 
 const mutations = {
     SET_TASKS: (state, data) => state.tasks = data,
-    ADD_TASK: (state, task) => state.task = task
+    ADD_TASK: (state, task) => state.task = task,
+    SET_TASK: (state, task) => {
+        const index = state.tasks.findIndex(todo => todo.id === task.id);
+        if (index !== -1) {
+            state.tasks.splice(index, 1, task);
+        }
+    }
 }
 
 export default {

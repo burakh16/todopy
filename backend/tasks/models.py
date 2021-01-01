@@ -18,6 +18,7 @@ class TaskManager(models.Manager):
             raise ValidationError("This task already complated!")
         task.complated_at = datetime.datetime.now(tz=timezone.utc)
         task.save()
+        return task
 
 
 class Task(models.Model):

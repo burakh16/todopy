@@ -39,8 +39,8 @@ class ComplateTaskView(APIView):
     def put(self, request, pk):
         task = get_object_or_404(
             Task.objects.get_user_tasks(request.user), pk=pk)
-        Task.objects.complate_task(task)
-        return Response()
+        task =Task.objects.complate_task(task)
+        return Response(TaskSerializer(task).data)
 
 
 class DeleteTaskView(APIView):

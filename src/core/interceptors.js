@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import axios from 'axios';
 import store from '../store/index'
 import router from '../router'
@@ -21,6 +22,16 @@ export default function setup() {
         function (error) {
             console.log(error);
             const originalRequest = error.config;
+
+            if (error.response.status === 400) {
+                let message = "";
+                for (var err in error.response.data) {
+                    message += err + ": "; // alerts key
+                    message += error.response.data[err] //alerts key's value
+                    message += "\n"
+                }
+                Vue.$toast.error(message);
+            }
 
             if (error.response.status === 401 && originalRequest._retry) {
                 return router.push({ name: "login" })
@@ -47,5 +58,6 @@ export default function setup() {
                         console.log(err)
                     })
             }
+            return error.response
         })
 }
