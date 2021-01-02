@@ -30,8 +30,20 @@ const actions = {
         localStorage.setItem('access', token);
         commit("SET_ACCESS", token)
     },
+    async register({ commit }, user) {
+        try {
+            const res = await axios.post('user/register/', user)
+            commit('SET_USER', res.data.user);
+            commit("SET_ACCESS", res.data.access);
+            commit("SET_REFRESH", res.data.refresh);
+            return true
+        } catch (error) {
+            return false
+        }
+    },
     async logout({ commit }) {
         localStorage.removeItem("access")
+        localStorage.removeItem("refresh")
         commit("LOGOUT")
 
     }
@@ -41,7 +53,11 @@ const mutations = {
     SET_USER: (state, user) => state.user = user,
     SET_ACCESS: (state, token) => state.access = token,
     SET_REFRESH: (state, token) => state.refresh = token,
-    LOGOUT: (state) => state.access = ""
+    LOGOUT: (state) => {
+        state.access = "";
+        state.refresh = "";
+        state.user = {}
+    }
 };
 
 export default {

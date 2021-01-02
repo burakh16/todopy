@@ -1,5 +1,4 @@
 import axios from 'axios'
-import api from '@/core/api'
 
 const state = {
     task: {},
@@ -21,7 +20,7 @@ const actions = {
     },
     async add_task({ commit }, task) {
         let url = `task/create/`
-        const response = await api.post(url, task)
+        const response = await axios.post(url, task)
         commit("ADD_TASK", response.data)
         return response.status
     },

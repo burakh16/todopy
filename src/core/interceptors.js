@@ -20,7 +20,6 @@ export default function setup() {
         return response
     },
         function (error) {
-            console.log(error);
             const originalRequest = error.config;
 
             if (error.response.status === 400) {
@@ -58,6 +57,6 @@ export default function setup() {
                         console.log(err)
                     })
             }
-            return error.response
+            return error
         })
 }
