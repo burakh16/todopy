@@ -18,7 +18,13 @@
     </v-col>
     <v-col cols="12" v-if="!getLoading && anyTask">
       <v-row>
-        <v-col cols="4" v-for="(item, index) in getTasks" :key="index">
+        <v-col
+          cols="12"
+          sm="6"
+          md="4"
+          v-for="(item, index) in getTasks"
+          :key="index"
+        >
           <TaskCard :task="item" @taskComplated="onTaskComplated" />
         </v-col>
         <v-col cols="12">
@@ -72,7 +78,13 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["get_tasks", "add_task", "complate_task", "set_loading"]),
+    ...mapActions([
+      "get_tasks",
+      "add_task",
+      "complate_task",
+      "set_loading",
+      "get_user",
+    ]),
     async onTabChanged(tab) {
       this.complated = tab;
       this.page = 1;
@@ -103,12 +115,15 @@ export default {
     },
     async onTaskSaved(task) {
       const status = await this.add_task(task);
-      console.log(status);
-      if (status === 200) this.$toast("You complated the task!");
+      if (status === 201) {
+        this.$toast.success("Task is created!");
+        await this.loadData();
+      }
     },
   },
   async created() {
     await this.loadData();
+    await this.get_user();
   },
 };
 </script>

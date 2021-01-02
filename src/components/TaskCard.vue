@@ -12,17 +12,33 @@
         <h2>{{ task.title }}</h2>
       </v-card-text>
       <v-divider :color="dividerColor"></v-divider>
-      <v-card-text :class="['content', task.complated ? 'white--text' : '']">
-        <strong>{{ task.description }}</strong>
+      <v-card-text :class="task.complated ? 'white--text' : ''">
+        <strong class="content">{{ task.description }}</strong>
         <div class="bottom">
-          <v-row>
-            <v-col cols="12" md="6">
-              {{ task.created_at }}
+          <v-row class="text-md-body-2 text-caption">
+            <v-col cols="12" sm="6" class="py-0">
+              <label>Created At:</label>
+              <p class="mb-0 font-weight-bold">
+                {{ task.created_at | formatDate }}
+              </p>
             </v-col>
-            <v-col cols="12" md="6">
-              <v-btn class="" small color="green" dark @click="taskComplated" v-if="!task.complated">
-                <v-icon>mdi-check</v-icon>
-                Complated
+            <v-col cols="12" sm="6" class="py-0" v-if="task.complated">
+              <label>Complated At:</label>
+              <p class="mb-0 font-weight-bold">
+                {{ task.complated_at | formatDate }}
+              </p>
+            </v-col>
+            <v-col cols="12" class="py-0">
+              <v-btn
+                small
+                color="green"
+                dark
+                block
+                @click="taskComplated"
+                :disabled="task.complated"
+              >
+                <v-icon class="mr-1">mdi-check</v-icon>
+                {{ task.complated ? "Complated" : "Complate" }}
               </v-btn>
             </v-col>
           </v-row>
@@ -63,5 +79,6 @@ export default {
 .bottom {
   position: absolute;
   bottom: 1vh;
+  width: 90%;
 }
 </style>

@@ -22,8 +22,7 @@ const actions = {
     async add_task({ commit }, task) {
         let url = `task/create/`
         const response = await api.post(url, task)
-        if(response.status === "200")
-            commit("ADD_TASK", response.data)
+        commit("ADD_TASK", response.data)
         return response.status
     },
     async complate_task({ commit }, task_id) {

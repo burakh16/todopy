@@ -15,3 +15,9 @@ class UserRegisterView(APIView):
         user = User.objects.create_user(
             username=serializer.validated_data["username"], password=serializer.validated_data["password"], name=serializer.validated_data["name"])
         return Response(UserSerializer)
+
+
+class GetUserView(APIView):
+    
+    def get(self, request):
+        return Response(UserSerializer(request.user).data)

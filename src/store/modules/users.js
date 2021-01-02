@@ -12,7 +12,6 @@ const getters = {
     getAccess: state => state.access,
     getRefresh: state => state.refresh,
     getUser: state => state.user,
-    getUsers: state => state.users
 };
 
 const actions = {
