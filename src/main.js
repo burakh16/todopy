@@ -4,9 +4,9 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
 import Vuelidate from 'vuelidate'
-import interceptorsSetup from './core/interceptors'
 
-import moment from 'moment';
+import interceptorsSetup from './core/interceptors'
+import './core/filters'
 
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
@@ -23,13 +23,6 @@ Vue.use(Toast, {
   maxToasts: 20,
   newestOnTop: true
 })
-
-//TODO move another file
-Vue.filter('formatDate', function (value) {
-  if (value) {
-    return moment(String(value)).format('MM/DD/YYYY hh:mm')
-  }
-});
 
 new Vue({
   router,

@@ -31,32 +31,27 @@ export default function setup() {
                 }
                 Vue.$toast.error(message);
             }
-
-            if (error.response.status === 401 && originalRequest._retry) {
-                return router.push({ name: "login" })
+            if (error.response.status === 401 && error.config.url === '/user/token/') {
+                store.dispatch('logout')
+                router.push({ name: "Login" })
             }
-
-            if (error.response.status === 401 && !originalRequest._retry) {
-                originalRequest._retry = true;
+            else if (error.response.status === 401) {
                 return axios.post('/user/token/',
                     {
                         "refresh": store.getters.getRefresh
                     })
                     .then(res => {
                         if (res.status === 200) {
-                            // 1) put token to LocalStorage
-                            store.dispatch('set_access_token', res.data.access);
-
-                            // 2) Change Authorization header
-                            axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getAccess;
-
-                            // 3) return originalRequest object with Axios.
-                            return axios(originalRequest);
+                            store.dispatch('set_access_token', res.data.access).then(() => {
+                                axios.defaults.headers.common['Authorization'] = 'Bearer ' + store.getters.getAccess;
+                                return axios(originalRequest);
+                            });
                         }
-                    }).catch(err => {
-                        console.log(err)
                     })
             }
-            return error
+            
+            return new Promise((resolve, reject) => {
+                reject(error);
+            });
         })
 }
